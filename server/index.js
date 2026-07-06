@@ -6,6 +6,7 @@ const app = express()
 import cors from "cors"
 import cookieParser from "cookie-parser"
 import authRouter from "./routes/auth.route.js"
+import userRouter from "./routes/user.route.js"
 
 
 app.use(cors({
@@ -17,6 +18,7 @@ app.use(express.json()) //converts json->js object without it req.body -> undefi
 app.use(cookieParser())
 
 app.use("/api/auth", authRouter)
+app.use("/api/user", userRouter)
 
 
 const PORT = process.env.PORT || 6000
