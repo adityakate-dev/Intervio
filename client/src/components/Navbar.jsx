@@ -49,7 +49,7 @@ function Navbar() {
                 <div className='bg-black text-white p-2 rounded-lg' >
                     <BsRobot size={18} />
                 </div>
-                <h1 className='font-semibold hidden md:block text-lg' >InterviewForge.AI</h1>
+                <h1 className='font-semibold hidden md:block text-lg' >Intervio</h1>
             </div>
 
             <div className='flex items-center gap-6 relative' >
