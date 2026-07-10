@@ -6,6 +6,7 @@ import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { setUserData } from './redux/userSlice'
 import axios from 'axios'
+import InterviewPage  from "./pages/InterviewPage"
 
 
 
@@ -19,13 +20,12 @@ const App = () => {
     const getUser = async () => {
       try {
         const result = await axios.get(ServerUrl + "/api/user/current-user", {withCredentials:true})
-        console.log(result.data)
+        // console.log(result.data)
         dispatch(setUserData(result.data))
         
       }
       catch(error){
         console.log(error);
-        console.log(error.response);
         dispatch(setUserData(null))
       }
     }
@@ -38,6 +38,9 @@ const App = () => {
     <Routes>
       <Route path='/' element={<Home/>} ></Route>
       <Route path='/auth' element={<Auth/>} ></Route>
+      <Route path='/interview' element={<InterviewPage/>} ></Route>
+
+
     </Routes>
   )
 }
