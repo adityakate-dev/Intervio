@@ -1,74 +1,52 @@
-import fs from "fs"
-import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
-import { askAi } from "../services/openRouter.service.js"
+import mongoose from "mongoose";
 
 
-export const analyzeResume = async (req, res) => {
-    try {
-        if (!req.file) {
-            return res.status(400).json({ message: "Resume required" });
-        }
-        const filepath = req.file.path
+const questionsSchema = new mongoose.Schema({
+    question: String,
+    difficulty: String,
+    timeLimit: Number,
+    answer: String,
+    feedback: String,
+    score: { type: Number, default: 0 },
+    confidence: { type: Number, default: 0},
+    communication: { type: Number, default: 0},
+    correctness: { type: Number, default: 0}
+})
 
-        const fileBuffer = await fs.promises.readFile(filepath)
-        const uint8Array = new Uint8Array(fileBuffer)
 
-        const pdf = await pdfjsLib.getDocument({ data: uint8Array }).promise;
-
-        let resumeText = "";
-
-        //Extract text from all the pages
-        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-            const page = await pdf.getPage(pageNum);
-            const content = await page.getTextContent();
-
-            const pageText = content.items.map(item => item.str).join(" ");
-            resumeText += pageText + "\n";
-        }
-
-        resumeText = resumeText
-            .replace(/\s+/g, " ")
-            .trim();
-        const messages = [
-            {
-                role: "system",
-                content: `Extract structured data from resume.
-                Return strictly JSON:
-                {
-                    "role": "string",
-                    "experience": "string",
-                    "projects": ["project1", "project2"],
-                    "skills": ["skill1", "skill2"]
-                }`
-            },
-            {
-                role: "user",
-                content: resumeText
-            }
-        ];
-
-        const aiResponse = await askAi(messages);
-
-        const parsed = JSON.parse(aiResponse);
-
-        fs.unlinkSync(filepath);
-
-        res.json({
-            role: parsed.role,
-            experience: parsed.experience,
-            projects: parsed.projects,
-            skills: parsed.skills,
-            resumeText
-        });
+const interviewSchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+    },
+    role: {
+        type: String, 
+        required: true
+    },
+    experience: {
+        type: String,
+        required: true
+    },
+    mode: {
+        type: String,
+        enum: ["HR", "Technical"],
+        required: true
+    },
+    resumeText: {
+        type: String
+    },
+    questions: [questionsSchema],
+    finalScore: { type: Number, default: 0 },
+    status: {
+        type: String,
+        enum: ["Incompleted", "completed"],
+        default: "Incompleted"
     }
-    catch (error) {
-        console.error(error);
 
-        if(req.file && fs.existsSync(req.file.path)){
-            fs.unlinkSync(req.file.path);
-        }
+}, {timestamps: true})
 
-        return res.status(500).json({message: error.message});
 
-    }
-};
+const Interview = mongoose.model("Interview", interviewSchema)
+
+export default Interview;
