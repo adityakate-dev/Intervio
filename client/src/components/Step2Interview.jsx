@@ -249,6 +249,7 @@ function Step2Interview({ interviewData, onFinish }) {
       setFeedback(result.data.feedback);
       speakText(result.data.feedback);
       setIsSubmitting(false);
+      return result;
     }
     catch (error) {
       console.log(error);
@@ -278,6 +279,8 @@ function Step2Interview({ interviewData, onFinish }) {
     stopMic();
     setIsMicOn(false);
     try {
+      //Submit last answer
+      await submitAnswer();
       const result = await axios.post(ServerUrl + "/api/interview/finish", { interviewId }, { withCredentials: true });
 
       console.log(result.data);
