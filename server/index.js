@@ -12,7 +12,7 @@ import paymentRouter from "./routes/payment.route.js"
 
 
 app.use(cors({
-    origin:"http://localhost:5173",
+    origin:"https://intervio-client.onrender.com",
     credentials:true
 }))
 
