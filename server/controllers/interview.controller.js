@@ -12,6 +12,9 @@ export const analyzeResume = async (req, res) => {
             return res.status(400).json({ message: "Resume required" });
         }
         const filepath = req.file.path
+        console.log(req.file);
+        console.log(filepath);
+        console.log("File exists:", fs.existsSync(filepath));
 
         const fileBuffer = await fs.promises.readFile(filepath)
         const uint8Array = new Uint8Array(fileBuffer)
