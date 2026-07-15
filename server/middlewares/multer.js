@@ -1,16 +1,6 @@
 import multer from 'multer'
 
-const storage = multer.diskStorage({
-    destination: function(req, file, callback){
-        callback(null, "public")
-    },
-    filename: function(req, file, callback){
-        const filename = Date.now() + "-" + file.originalname
-        console.log("Uploading:", filename);
-
-        callback(null, filename)
-    }
-})
+const storage = multer.memoryStorage();
 
 
 export const upload = multer({
