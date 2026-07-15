@@ -11,13 +11,10 @@ export const analyzeResume = async (req, res) => {
         if (!req.file) {
             return res.status(400).json({ message: "Resume required" });
         }
-        const filepath = req.file.path
-        console.log(req.file);
-        console.log(filepath);
-        console.log("File exists:", fs.existsSync(filepath));
+        
+        const uint8Array = new Uint8Array(req.file.buffer);
 
-        const fileBuffer = await fs.promises.readFile(filepath)
-        const uint8Array = new Uint8Array(fileBuffer)
+        
 
         const pdf = await pdfjsLib.getDocument({ data: uint8Array }).promise;
 
