@@ -66,7 +66,7 @@ export const analyzeResume = async (req, res) => {
             throw new Error("AI returned malformed JSON");
         }
 
-        fs.unlinkSync(filepath);
+        
 
         res.json({
             role: parsed.role,
@@ -78,10 +78,6 @@ export const analyzeResume = async (req, res) => {
     }
     catch (error) {
         console.error(error);
-
-        if (req.file && fs.existsSync(req.file.path)) {
-            fs.unlinkSync(req.file.path);
-        }
 
         return res.status(500).json({ message: error.message });
 
